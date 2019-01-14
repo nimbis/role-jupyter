@@ -1,0 +1,39 @@
+---
+
+# This was taken from the link below:
+# https://developers.redhat.com/blog/2013/02/14/setting-up-django-and-python-2-7-on-red-hat-enterprise-6-the-easy-way/
+- name: Add a repository for the Python 2.7 SCL
+  command: sudo sh -c 'wget -qO- http://people.redhat.com/bkabrda/scl_python27.repo >> /etc/yum.repos.d/scl.repo'
+
+- name: Setup the epel package repository
+  yum:
+    name: "https://s3-us-gov-west-1.amazonaws.com/nimbis-epel/epel-release-6-8.noarch.rpm"
+    state: present
+
+- name: Install scl-utils
+  yum:
+    name: scl-utils
+    state: present
+
+- name: Make sure we have python27 and pip
+  yum:
+    name:
+      - python27
+      - python-pip
+    state: present
+
+- name: Install pip
+  shell: scl enable python27 'easy_install-2.7 pip'
+
+# Putting this in ldconfig, so we can load the venv and that's the end of it.
+# The interpretor (binary) comes with the venv.
+- name: Copy in ld.conf file for SCL
+  copy:
+    content: "/opt/rh/python27/root/usr/lib64"
+    dest: "/etc/ld.so.conf.d/python27-scl.conf"
+    owner: "root"
+    group: "root"
+    mode: 0644
+
+- name: Update library paths
+  command: "ldconfig"

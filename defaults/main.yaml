@@ -1,0 +1,2 @@
+# virtualenv to install JupyterLabs into
+jupyterlab_venv: "/opt/jupyterlab"

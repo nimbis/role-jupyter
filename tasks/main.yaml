@@ -1,0 +1,26 @@
+---
+- import_tasks: virtualenv.yaml
+
+# https://stackoverflow.com/a/51002197
+- name: install previous version of tornado in system virtualenv
+  pip:
+    virtualenv: "{{ jupyterlab_venv }}"
+    umask: "022"
+    name: tornado
+    state: present
+    version: 4.5.3
+
+- name: install jupyterlab in the system virtualenv
+  pip:
+    virtualenv: "{{ jupyterlab_venv }}"
+    umask: "022"
+    name: jupyterlab
+    state: present
+
+- name: create a desktop entry for launching jupyterlab
+  template:
+    src: jupyterlab.desktop
+    dest: /usr/share/applications/jupyterlab.desktop
+    owner: root
+    group: root
+    mode: 0644

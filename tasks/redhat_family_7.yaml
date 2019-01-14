@@ -1,0 +1,6 @@
+---
+
+- name: Install pip for use with the system Python
+  yum:
+    name: python-pip
+    state: present

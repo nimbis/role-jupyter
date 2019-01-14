@@ -1,0 +1,71 @@
+---
+- name: Install system package dependencies for this role
+  yum:
+    name: wget
+    state: present
+
+- name: Run tasks specific to RHEL/CentOS 6
+  import_tasks: redhat_family_6.yaml
+  when:
+    - "ansible_os_family == 'RedHat'"
+    - "ansible_distribution_major_version == '6'"
+
+- name: Run tasks specific to RHEL/CentOS 7
+  import_tasks: redhat_family_7.yaml
+  when:
+    - "ansible_os_family == 'RedHat'"
+    - "ansible_distribution_major_version == '7'"
+
+# We probably want a recent virtualenv and the best way (IMHO) to get that is
+# from pip.  We seem to be able to install items from pip and this won't break
+# RPM verification, IFF that program does not already exist.  Let's check first
+# and then install it from pip.
+- name: Check for existing virtualenv
+  stat:
+    path: /usr/bin/virtualenv
+  register: usr_bin_virtualenv_stat
+
+- name: Grab virtualenv from pip
+  pip:
+    umask: "022"
+    name: virtualenv
+    # FIXME: This pin is only necessary while we are using RHEL6, (which has
+    # python 2.6 which is not supported by versions of virtualenv >= 16.0.0).
+    # This version can be dropped and we can use "state: latest" after we
+    # move to RHEL7.
+    version: 15.2.0
+    state: present
+    extra_args: "--exists-action=w"
+  when: not usr_bin_virtualenv_stat.stat.exists
+
+- name: Create virtual env using Python 2.7
+  shell: "umask 022; scl enable python27 'virtualenv {{ jupyterlab_venv }}'"
+  args:
+    creates: "{{ jupyterlab_venv }}"
+  when:
+    - "ansible_os_family == 'RedHat'"
+    - "ansible_distribution_major_version == '6'"
+
+- name: Create virtual env using Python 2.7
+  shell: "umask 022; virtualenv {{ jupyterlab_venv }}"
+  args:
+    creates: "{{ jupyterlab_venv }}"
+  when:
+    - "ansible_os_family == 'RedHat'"
+    - "ansible_distribution_major_version == '7'"
+
+- name: Update pip
+  pip:
+    umask: "022"
+    virtualenv: "{{ jupyterlab_venv }}"
+    name: pip
+    state: latest
+
+# We had RHEL-06-000282 (There must be no world-writable files on the system.)
+# trip on us.  I think it was setuptools.  Permission hammer it.
+- name: Clean up dumb permissions
+  file:
+    mode: "o-w" # duh?
+    state: "directory"
+    dest: "{{ jupyterlab_venv }}"
+    recurse: True

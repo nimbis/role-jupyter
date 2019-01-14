@@ -1,0 +1,9 @@
+# {{ ansible_managed }}
+
+[Desktop Entry]
+Name=Jupyter Lab
+Icon=accessories-text-editor
+Comment=Jupyter Notebook Lab Module
+Exec={{ jupyterlab_venv }}/bin/jupyter lab
+Type=Application
+Categories=Development;IDE;NumericalAnalysis;
