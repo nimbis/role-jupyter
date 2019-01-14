@@ -1,3 +1,11 @@
----
+galaxy_info:
+  author: Alexandru Barbur
+  description: Installs Jupyter Lab for GNOME desktop on RHEL 6 and 7.
+  company: Nimbis Services, Inc.
+
+  license: BSD
+
+  min_ansible_version: 2.4
+
 dependencies:
-  - role: system-venvs
+  - src: role-python27-and-venvs
