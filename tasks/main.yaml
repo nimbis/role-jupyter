@@ -1,6 +1,12 @@
 ---
 - import_tasks: virtualenv.yaml
 
+# required for configuring jupyterlab
+- name: install dev tools
+  yum:
+    name: "@Development Tools"
+    state: present
+
 # https://stackoverflow.com/a/51002197
 - name: install previous version of tornado in system virtualenv
   pip:
