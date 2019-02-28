@@ -1,7 +1,7 @@
-# role-jupyterlab
+# role-jupyter
 
-Install Jupyter Notebook Lab module into a system virtualenv and provide a
-desktop shorcut for users to launch it.
+Install Jupyter and Jupyter Lab modules into a virtualenv and provides desktop
+shorcuts for users to launch them.
 
 ## References
 
@@ -9,10 +9,6 @@ desktop shorcut for users to launch it.
 * https://developer.gnome.org/integration-guide/stable/desktop-files.html.en
 * https://specifications.freedesktop.org/desktop-entry-spec/latest/
 * https://specifications.freedesktop.org/menu-spec/latest/
-
-# Dependencies
-
-nimbis.role-python-27-and-venvs
 
 # License
 

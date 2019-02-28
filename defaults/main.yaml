@@ -1,2 +1,5 @@
+# Python interpreter to create virtualenv with
+jupyter_python: "/usr/bin/python"
+
 # virtualenv to install JupyterLabs into
-jupyterlab_venv: "/opt/jupyterlab"
+jupyter_venv: "/opt/jupyter"

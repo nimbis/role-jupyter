@@ -1,8 +1,0 @@
----
-
-- name: Install pip and development headers for system Python
-  yum:
-    name:
-      - python-pip
-      - python-devel
-    state: present

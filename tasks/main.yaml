@@ -1,7 +1,7 @@
 ---
 - import_tasks: virtualenv.yaml
 
-# required for configuring jupyterlab
+# required for installing python extensions
 - name: Install dev tools
   yum:
     name: "@Development Tools"
@@ -10,7 +10,7 @@
 # https://stackoverflow.com/a/51002197
 - name: Install previous version of tornado in system virtualenv
   pip:
-    virtualenv: "{{ jupyterlab_venv }}"
+    virtualenv: "{{ jupyter_venv }}"
     umask: "022"
     name: tornado
     state: present
@@ -19,17 +19,23 @@
     - "ansible_os_family == 'RedHat'"
     - "ansible_distribution_major_version == '6'"
 
-- name: Install jupyterlab in the system virtualenv
+- name: Install python packages in the virtualenv
   pip:
-    virtualenv: "{{ jupyterlab_venv }}"
+    virtualenv: "{{ jupyter_venv }}"
     umask: "022"
-    name: jupyterlab
+    name: "{{ item }}"
     state: present
+  with_items:
+    - jupyter
+    - jupyterlab
 
-- name: Create a desktop entry for launching JupyterLab
+- name: Create a desktop entries
   template:
-    src: jupyterlab.desktop
-    dest: /usr/share/applications/jupyterlab.desktop
+    src: "{{ item }}.desktop"
+    dest: "/usr/share/applications/{{ item }}.desktop"
     owner: root
     group: root
     mode: 0644
+  with_items:
+    - jupyter
+    - jupyterlab
